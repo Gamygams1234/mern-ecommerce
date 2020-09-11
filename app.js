@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 // this is ggetting the user routes
 const user = require("./routes/user");
-
+const expressValidator = require("express-validator");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
@@ -25,6 +25,7 @@ app.use(morgan("dev"));
 // body parser helps us parse the data
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(expressValidator());
 
 app.get("/", (req, res) => {
   res.send("If she sees my stscks");
