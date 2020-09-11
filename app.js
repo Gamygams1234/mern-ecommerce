@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 // this is ggetting the user routes
 const user = require("./routes/user");
 
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
+
 const app = express();
 
 require("dotenv").config();
@@ -15,6 +19,12 @@ mongoose
   .catch((error) => {
     console.error(error);
   });
+// middleware
+//morgan will help with the console log in the terminal
+app.use(morgan("dev"));
+// body parser helps us parse the data
+app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("If she sees my stscks");
