@@ -1,5 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
+// this is ggetting the user routes
+const user = require("./routes/user");
 
 const app = express();
 
@@ -17,6 +19,8 @@ mongoose
 app.get("/", (req, res) => {
   res.send("If she sees my stscks");
 });
+
+app.use("/api", user);
 
 const port = process.env.PORT || 8000;
 
