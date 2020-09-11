@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
+const { sayHi } = require("../controllers/user");
 // create method
 
-router.get("/", (req, res) => {
-  res.send("Hello Gamy");
-});
+router.get("/", sayHi);
 
 module.exports = router;
