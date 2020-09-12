@@ -29,6 +29,7 @@ UserSchema.virtual("password")
   });
 
 UserSchema.methods = {
+  // this will give us the authentication
   authenticate: function (plainText) {
     return this.encryptPassword(plainText) === this.hashed_password;
   },
