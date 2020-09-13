@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 // this is ggetting the user routes
-const user = require("./routes/user");
+const auth = require("./routes/auth");
 const expressValidator = require("express-validator");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
   res.send("If she sees my stscks");
 });
 
-app.use("/api", user);
+app.use("/api", auth);
 
 const port = process.env.PORT || 8000;
 
