@@ -2,6 +2,8 @@ const User = require("../models/user");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
+// making sure we can get our dot env file
+require("dotenv").config();
 
 exports.signUp = (req, res) => {
   console.log("req.body", req.body);
@@ -33,7 +35,7 @@ exports.signIn = (req, res) => {
       });
     }
     // create authencications
-    const token = jwt.sign({ _id: user.id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
     res.cookie("t", token, { expire: new Date() + 99999 });
     const { _id, name, email, role } = user;
     return res.json({ token, user: { _id, email, name, role } });
@@ -46,7 +48,7 @@ exports.signOut = (req, res) => {
 };
 
 exports.requireSignin = expressJwt({
-  secret: "secret",
-  algorithms: ["HS256A"],
+  secret: process.env.JWT_SECRET,
+  algorithms: ["HS256"],
   userProperty: "auth",
 });
