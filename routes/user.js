@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { requireSignin, isAuth, isAdmin } = require("../controllers/auth");
+const { requireSignin, isAuth, isAdmin } = require("../controllers/checks");
 const { userById } = require("../controllers/user");
 // create method
 

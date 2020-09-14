@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 // this is ggetting the user routes
 const auth = require("./routes/auth");
 const user = require("./routes/user");
+const category = require("./routes/category");
 const expressValidator = require("express-validator");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -34,6 +35,7 @@ app.get("/", (req, res) => {
 
 app.use("/api", auth);
 app.use("/api", user);
+app.use("/api", category);
 
 const port = process.env.PORT || 8000;
 

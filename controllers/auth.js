@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 const jwt = require("jsonwebtoken");
-const expressJwt = require("express-jwt");
+
 // making sure we can get our dot env file
 require("dotenv").config();
 
@@ -21,7 +21,9 @@ exports.signUp = (req, res) => {
 };
 
 exports.signIn = (req, res) => {
+  // checking for the two fields
   const { email, password } = req.body;
+  // finding user by email
   User.findOne({ email }, (err, user) => {
     if (err || !user) {
       return res.status(400).json({
@@ -45,29 +47,4 @@ exports.signIn = (req, res) => {
 exports.signOut = (req, res) => {
   res.clearCookie("t");
   res.json({ message: "Success" });
-};
-
-exports.requireSignin = expressJwt({
-  secret: process.env.JWT_SECRET,
-  algorithms: ["HS256"],
-  userProperty: "auth",
-});
-
-exports.isAuth = (req, res, next) => {
-  let user = req.profile && req.auth && req.profile._id == req.auth._id;
-  if (!user) {
-    return res.status(403).json({
-      error: "Access denied",
-    });
-  }
-  next();
-};
-
-exports.isAdmin = (req, res, next) => {
-  if (req.profile.role === 0) {
-    return res.status(403).json({
-      error: "Admin resourse! Access denied",
-    });
-  }
-  next();
 };
