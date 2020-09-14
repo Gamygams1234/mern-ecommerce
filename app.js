@@ -8,6 +8,7 @@ const expressValidator = require("express-validator");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
+const product = require("./routes/product");
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 app.use("/api", auth);
 app.use("/api", user);
 app.use("/api", category);
+app.use("/api", product);
 
 const port = process.env.PORT || 8000;
 

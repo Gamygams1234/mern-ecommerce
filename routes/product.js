@@ -1,0 +1,12 @@
+const express = require("express");
+const router = express.Router();
+const { userSignupValidator } = require("../validator/index");
+const { newCategory } = require("../controllers/category");
+const { requireSignin, isAdmin, isAuth } = require("../controllers/checks");
+const { userById } = require("../controllers/user");
+
+router.post("/create-product/:userId", requireSignin, isAuth, newCategory);
+
+router.param("userId", userById);
+
+module.exports = router;
