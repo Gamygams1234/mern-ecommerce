@@ -15,6 +15,16 @@ exports.readProduct = (req, res) => {
   return res.json(req.product);
 };
 
+exports.deleteProduct = (req, res) => {
+  const product = req.product;
+  if (!product) {
+    return res.status(400).json({
+      error: "Product not found",
+    });
+  }
+  product.remove();
+  return res.json({ msg: "product was removed" });
+};
 exports.createProduct = (req, res) => {
   let form = new formidable.IncomingForm();
 
