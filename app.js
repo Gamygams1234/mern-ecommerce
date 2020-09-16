@@ -1,14 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
 // this is ggetting the user routes
-const auth = require("./routes/auth");
-const user = require("./routes/user");
-const category = require("./routes/category");
+
 const expressValidator = require("express-validator");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
-const product = require("./routes/product");
+
+const authRoute = require("./routes/auth");
+const userRoute = require("./routes/user");
+const categoryRoute = require("./routes/category");
+const productRoute = require("./routes/product");
 
 const app = express();
 
@@ -34,10 +36,10 @@ app.get("/", (req, res) => {
   res.send("If she sees my stacks");
 });
 
-app.use("/api", auth);
-app.use("/api", user);
-app.use("/api", category);
-app.use("/api", product);
+app.use("/api", authRoute);
+app.use("/api", userRoute);
+app.use("/api", categoryRoute);
+app.use("/api", productRoute);
 
 const port = process.env.PORT || 8000;
 

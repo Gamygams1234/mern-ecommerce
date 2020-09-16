@@ -1,6 +1,5 @@
 const expressJwt = require("express-jwt");
 
-const jwt = require("jsonwebtoken");
 // making sure we can get our dot env file
 require("dotenv").config();
 

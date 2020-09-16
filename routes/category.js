@@ -5,7 +5,7 @@ const { newCategory } = require("../controllers/category");
 const { requireSignin, isAdmin, isAuth } = require("../controllers/checks");
 const { userById } = require("../controllers/user");
 
-router.post("/create-category/:userId", requireSignin, isAuth, newCategory);
+router.post("/create-category/:userId", requireSignin, isAdmin, isAuth, newCategory);
 
 router.param("userId", userById);
 
