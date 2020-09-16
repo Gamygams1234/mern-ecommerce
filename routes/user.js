@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { requireSignin, isAuth, isAdmin } = require("../controllers/checks");
-const { userById } = require("../controllers/user");
+const { userById } = require("../controllers/params");
 // create method
 
 // putting our middleware to check if it is admin and if it is authenicated

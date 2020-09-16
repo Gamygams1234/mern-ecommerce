@@ -7,6 +7,14 @@ const formidable = require("formidable");
 
 require("dotenv").config();
 
+//using this function to read with the param
+exports.readProduct = (req, res) => {
+  // taking out our photo  so we can read the info
+  //might send it again
+  req.product.photo = undefined;
+  return res.json(req.product);
+};
+
 exports.createProduct = (req, res) => {
   let form = new formidable.IncomingForm();
 
@@ -45,18 +53,5 @@ exports.createProduct = (req, res) => {
       }
       res.json(data);
     });
-  });
-};
-
-exports.productById = async (req, res) => {
-  console.log(req.params.product_id);
-  Product.findById(req.params.product_id).exec((err, product) => {
-    if (err || !product) {
-      return res.status(400).json({
-        error: "Product not found",
-      });
-    }
-    res.json(product);
-    next();
   });
 };
