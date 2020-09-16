@@ -28,6 +28,12 @@ exports.createProduct = (req, res) => {
     }
     const product = new Product(fields);
     if (files.photo) {
+      if (files.photo.size > 1000000) {
+        // this will immedaiately stop the upload and unleash the error if the file is too big
+        return res.status(400).json({
+          error: "The photo is too big! Has to be 1mb or less",
+        });
+      }
       product.photo.data = fs.readFileSync(files.photo.path);
       product.photo.contentType = files.photo.type;
     }
@@ -39,5 +45,18 @@ exports.createProduct = (req, res) => {
       }
       res.json(data);
     });
+  });
+};
+
+exports.productById = async (req, res) => {
+  console.log(req.params.product_id);
+  Product.findById(req.params.product_id).exec((err, product) => {
+    if (err || !product) {
+      return res.status(400).json({
+        error: "Product not found",
+      });
+    }
+    res.json(product);
+    next();
   });
 };
