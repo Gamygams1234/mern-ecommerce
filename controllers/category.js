@@ -18,3 +18,7 @@ exports.newCategory = (req, res) => {
     res.json({ data });
   });
 };
+
+exports.readCategory = (req, res) => {
+  return res.json(req.category);
+};

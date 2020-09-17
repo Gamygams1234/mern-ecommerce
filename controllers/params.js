@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Product = require("../models/product");
+const Category = require("../models/category");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
@@ -28,4 +29,15 @@ exports.productById = (req, res, next, id) => {
       req.product = product;
       next();
     });
+};
+exports.categoryById = (req, res, next, _id) => {
+  Category.findById(_id).exec((err, category) => {
+    if (err || !category) {
+      return res.status(400).json({
+        error: "Category not found",
+      });
+    }
+    req.category = category;
+    next();
+  });
 };
