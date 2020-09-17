@@ -4,6 +4,8 @@ const { errorHandler } = require("../helpers/dbErrorHandler");
 
 const fs = require("fs");
 const formidable = require("formidable");
+const lodash = require("lodash");
+// this is where we are putting all the crud
 
 require("dotenv").config();
 
@@ -25,6 +27,7 @@ exports.deleteProduct = (req, res) => {
   product.remove();
   return res.json({ msg: "product was removed" });
 };
+
 exports.createProduct = (req, res) => {
   let form = new formidable.IncomingForm();
 
@@ -45,6 +48,49 @@ exports.createProduct = (req, res) => {
       });
     }
     const product = new Product(fields);
+    if (files.photo) {
+      if (files.photo.size > 1000000) {
+        // this will immedaiately stop the upload and unleash the error if the file is too big
+        return res.status(400).json({
+          error: "The photo is too big! Has to be 1mb or less",
+        });
+      }
+      product.photo.data = fs.readFileSync(files.photo.path);
+      product.photo.contentType = files.photo.type;
+    }
+    product.save((err, data) => {
+      if (err) {
+        return res.status(400).json({
+          err: errorHandler(err),
+        });
+      }
+      res.json(data);
+    });
+  });
+};
+
+exports.editProduct = (req, res) => {
+  let form = new formidable.IncomingForm();
+
+  form.keepExtensions = true;
+  form.parse(req, (err, fields, files) => {
+    console.log(fields);
+    if (err) {
+      return res.status(400).json({
+        err: errorHandler(err),
+      });
+    }
+
+    const { name, description, price, category, quantity, shipping } = fields;
+
+    if (!name || !description || !price || !category || !quantity || !shipping) {
+      return res.status(400).json({
+        error: "All fields are required",
+      });
+    }
+    // this is the difference between the create and the update
+    let product = req.product;
+    product = lodash.assign(product, fields);
     if (files.photo) {
       if (files.photo.size > 1000000) {
         // this will immedaiately stop the upload and unleash the error if the file is too big
