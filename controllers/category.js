@@ -52,14 +52,12 @@ exports.deleteCategory = (req, res) => {
 
 // this is to show all the categories
 exports.getAllCategories = (req, res) => {
-  Category.find()
-    .sort({ createdAt: 1 })
-    .exec((err, data) => {
-      if (err) {
-        return res.status(400).json({
-          error: errorHandler(err),
-        });
-      }
-      res.json(data);
-    });
+  Category.find().exec((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: errorHandler(err),
+      });
+    }
+    res.json(data);
+  });
 };
