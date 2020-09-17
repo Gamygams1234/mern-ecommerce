@@ -132,3 +132,19 @@ exports.listProducts = (req, res) => {
       return res.json(data);
     });
 };
+
+exports.relatedProducts = (req, res) => {
+  let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+
+  Product.find({ _id: { $ne: req.product }, category: req.product.category })
+    .limit(limit)
+    .populate("category", "_id name")
+    .exec((err, data) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Products not found",
+        });
+      }
+      res.json(data);
+    });
+};
