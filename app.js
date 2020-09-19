@@ -11,6 +11,8 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const categoryRoute = require("./routes/category");
 const productRoute = require("./routes/product");
+const { requireSignin } = require("./controllers/checks");
+const cors = require("cors");
 
 const app = express();
 
@@ -31,6 +33,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressValidator());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("If she sees my stacks");

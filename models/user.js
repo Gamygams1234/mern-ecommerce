@@ -9,7 +9,7 @@ const UserSchema = new Schema(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true, unique: true },
     hashed_password: { type: String, required: true },
-    about: { type: String, required: true },
+    about: { type: String, required: false },
     salt: String,
     role: { type: Number, default: 0 },
     history: { type: Array, default: [] },
