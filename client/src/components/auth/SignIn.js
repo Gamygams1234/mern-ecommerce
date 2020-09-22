@@ -1,18 +1,33 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-const SignIn = () => {
+import { Link, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { login } from "../../actions/auth";
+
+const SignIn = ({ isAuthenticated, login }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    error: "",
   });
 
-  const { email, password } = formData;
+  const { email, password, error } = formData;
 
   const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    login({ email, password });
   };
+
+  if (isAuthenticated === true) {
+    return <Redirect to="/" />;
+  }
+  const showError = () => (
+    <div className="alert alert-danger" style={{ display: error ? "" : "none" }}>
+      {error}
+    </div>
+  );
+
   return (
     <div className="container pt-4">
       <h2>Sign In</h2>
@@ -41,4 +56,12 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+SignIn.propType = {
+  login: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, { login })(SignIn);

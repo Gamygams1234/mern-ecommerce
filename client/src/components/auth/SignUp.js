@@ -4,20 +4,40 @@ import { connect } from "react-redux";
 import { signup } from "../../actions/auth";
 import PropTypes from "prop-types";
 
-const SignUp = ({ isAuthenticated, signup }) => {
+const SignUp = ({ isAuthenticated, signup, serverError }) => {
+  const emailTest = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     name: "",
+    password2: "",
     error: "",
   });
 
-  const { email, password, name } = formData;
+  const { email, password, name, password2, error } = formData;
 
   const onChange = (e) => setFormData({ ...formData, error: false, [e.target.name]: e.target.value });
+  const showError = () => (
+    <div className="alert alert-danger" style={{ display: error ? "" : "none" }}>
+      {error}
+    </div>
+  );
   const onSubmit = (e) => {
     e.preventDefault();
-    signup({ name, email, password });
+    if (password !== password2) {
+      setFormData({ ...formData, error: "Passwords do not match!" });
+      window.scrollTo(0, 0);
+    } else if (!emailTest.test(email)) {
+      setFormData({ ...formData, error: "Email is not in correct format!" });
+    } else {
+      window.scrollTo(0, 0);
+      signup({ name, email, password });
+      // .then((data) => {
+      //   if (typeof window !== "undefined") {
+      //     localStorage.setItem("jwt", JSON.stringify(data));
+      //   }
+      // });
+    }
   };
 
   if (isAuthenticated === true) {
@@ -25,8 +45,9 @@ const SignUp = ({ isAuthenticated, signup }) => {
   }
 
   return (
-    <div className="container pt-4">
+    <div className="container pt-4 pb-4">
       <h2>Sign Up</h2>
+      {showError()}
       <form className="pt-4" onSubmit={onSubmit}>
         <div className="form-group">
           <label>Username</label>
@@ -42,6 +63,11 @@ const SignUp = ({ isAuthenticated, signup }) => {
         <div className="form-group">
           <label>Password</label>
           <input type="password" name="password" className="form-control" value={password} onChange={(e) => onChange(e)} id="exampleInputPassword1"></input>
+        </div>
+
+        <div className="form-group">
+          <label>ReType your password</label>
+          <input type="password" name="password2" className="form-control" value={password2} onChange={(e) => onChange(e)}></input>
         </div>
         <div className="pb-4">
           <small>
@@ -62,6 +88,7 @@ SignUp.propType = {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  serverError: state.auth.serverError,
 });
 
 export default connect(mapStateToProps, { signup })(SignUp);
