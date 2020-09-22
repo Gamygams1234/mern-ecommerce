@@ -14,6 +14,10 @@ const Header = ({ isAuthenticated, logout }) => {
       <a className="nav-item nav-link" onClick={logout} href="#!">
         <i className="fas fa-sign-out-alt" /> <span className="hide-sm">Logout</span>
       </a>
+
+      <NavLink className="nav-item nav-link" to="/dashboard">
+        Dashboad
+      </NavLink>
     </div>
   );
 
@@ -28,7 +32,7 @@ const Header = ({ isAuthenticated, logout }) => {
       <NavLink className="nav-item nav-link" to="/sign-up">
         Sign Up
       </NavLink>
-      <NavLink className="nav-item nav-link" to="/">
+      <NavLink className="nav-item nav-link" to="/dashboard">
         Dashboad
       </NavLink>
     </div>

@@ -13,9 +13,10 @@ export const signup = ({ name, email, password }) => (dispatch) => {
   axios
     .post("http://localhost:8000/api/signup", postData, config)
     .then((res) => {
-      authenticate(res.data.token);
+      authenticate(res.data);
       dispatch({
         type: REGISTER_SUCCESS,
+        payload: res.data.user,
       });
     })
 
@@ -38,9 +39,10 @@ export const login = ({ email, password }) => (dispatch) => {
   axios
     .post("http://localhost:8000/api/signin", postData, config)
     .then((res) => {
-      authenticate(res.data.token);
+      authenticate(res.data);
       dispatch({
         type: LOGIN_SUCCESS,
+        payload: res.data.user,
       });
     })
     .catch((error) => {
@@ -49,7 +51,18 @@ export const login = ({ email, password }) => (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
-  dispatch({
-    type: LOGOUT,
-  });
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("jwt");
+  }
+
+  axios
+    .get("http://localhost:8000/api/signout")
+    .then((res) => {
+      dispatch({
+        type: LOGOUT,
+      });
+    })
+    .catch((error) => {
+      console.log(`Error: ${error}`);
+    });
 };

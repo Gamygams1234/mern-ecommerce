@@ -6,6 +6,8 @@ import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
 import store from "./store";
 import { Provider } from "react-redux";
+import Dashboard from "./components/dashboard/Dashboard";
+import PrivateRoute from "./components/routing/PrivateRoute";
 
 function App() {
   return (
@@ -15,6 +17,7 @@ function App() {
           <Header></Header>
           <Switch>
             <Route exact path="/" component={Home}></Route>
+            <PrivateRoute path="/dashboard" component={Dashboard}></PrivateRoute>
             <Route path="/sign-in" component={SignIn}></Route>
             <Route path="/sign-up" component={SignUp}></Route>
           </Switch>
