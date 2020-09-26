@@ -30,7 +30,7 @@ const AddProduct = ({ user, token }) => {
 
   const fetchCategories = () => {
     axios
-      .get(`http://localhost:8000/api/category/all`)
+      .get(`/api/category/all`)
       .then((res) => {
         setValues({
           ...values,
@@ -95,7 +95,7 @@ const AddProduct = ({ user, token }) => {
     } else {
       axios({
         method: "post",
-        url: `http://localhost:8000/api/products/create/${user._id}`,
+        url: `/api/products/create/${user._id}`,
         data: formData,
         headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
       })

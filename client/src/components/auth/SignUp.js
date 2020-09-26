@@ -32,11 +32,6 @@ const SignUp = ({ isAuthenticated, signup, serverError }) => {
     } else {
       window.scrollTo(0, 0);
       signup({ name, email, password });
-      // .then((data) => {
-      //   if (typeof window !== "undefined") {
-      //     localStorage.setItem("jwt", JSON.stringify(data));
-      //   }
-      // });
     }
   };
 

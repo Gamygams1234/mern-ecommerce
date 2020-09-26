@@ -28,7 +28,7 @@ const AddCategory = ({ user, token }) => {
       },
     };
     axios
-      .post(`http://localhost:8000/api/category/create/${user._id}`, category, config)
+      .post(`/api/category/create/${user._id}`, category, config)
       .then((res) => {
         setSuccess(name);
       })

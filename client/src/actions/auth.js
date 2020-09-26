@@ -11,7 +11,7 @@ export const signup = ({ name, email, password }) => (dispatch) => {
     },
   };
   axios
-    .post("http://localhost:8000/api/signup", postData, config)
+    .post("/api/signup", postData, config)
     .then((res) => {
       authenticate(res.data);
       dispatch({
@@ -37,7 +37,7 @@ export const login = ({ email, password }) => (dispatch) => {
     },
   };
   axios
-    .post("http://localhost:8000/api/signin", postData, config)
+    .post("/api/signin", postData, config)
     .then((res) => {
       authenticate(res.data);
       dispatch({
@@ -56,7 +56,7 @@ export const logout = () => (dispatch) => {
   }
 
   axios
-    .get("http://localhost:8000/api/signout")
+    .get("/api/signout")
     .then((res) => {
       dispatch({
         type: LOGOUT,
