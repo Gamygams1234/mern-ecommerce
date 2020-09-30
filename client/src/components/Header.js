@@ -33,7 +33,10 @@ const Header = ({ isAuthenticated, logout }) => {
         Sign Up
       </NavLink>
       <NavLink className="nav-item nav-link" to="/dashboard">
-        Dashboad
+        Dashboard
+      </NavLink>
+      <NavLink className="nav-item nav-link" to="/shop">
+        Shop
       </NavLink>
     </div>
   );

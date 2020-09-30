@@ -1,6 +1,6 @@
 import queryString from "query-string";
 import axios from "axios";
-import { GET_PRODUCTS, GET_NEW_PRODUCTS } from "./types";
+import { GET_PRODUCTS, GET_NEW_PRODUCTS, GET_ONE_PRODUCT } from "./types";
 
 export const getProducts = (sortBy = "sold") => (dispatch) => {
   axios
@@ -16,12 +16,64 @@ export const getProducts = (sortBy = "sold") => (dispatch) => {
     });
 };
 
+export const getSingleProduct = (productId) => (dispatch) => {
+  axios
+    .get(`/api/products/${productId}`)
+    .then((res) => {
+      dispatch({
+        type: GET_ONE_PRODUCT,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const getFilteredProducts = (skip, limit, filters = {}) => (dispatch) => {
+  const data = JSON.stringify({
+    limit,
+    skip,
+    filters,
+  });
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  axios
+    .post(`/api/products/by/search`, data, config)
+    .then((res) => {
+      dispatch({
+        type: GET_PRODUCTS,
+        payload: res.data.data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 export const getNewProducts = () => (dispatch) => {
   axios
-    .get(`/api/products?limit=6&sortBy=date&order=desc`)
+    .get(`/api/products?limit=6&sortBy=createdAt&order=desc`)
     .then((res) => {
       dispatch({
         type: GET_NEW_PRODUCTS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const productsByCategory = (categoryId = "5f5e9d9f474d737d28072286") => (dispatch) => {
+  axios
+    .get(`/api/category/${categoryId}`)
+    .then((res) => {
+      dispatch({
+        type: GET_PRODUCTS,
         payload: res.data,
       });
     })

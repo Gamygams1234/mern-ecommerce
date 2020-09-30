@@ -12,6 +12,8 @@ import NotAdmin from "./components/routing/NotAdmin";
 import AddCategory from "./components/AdiminRoutes/AddCategory";
 import AdminRoute from "./components/routing/AdminRoute";
 import AddProduct from "./components/AdiminRoutes/AddProduct";
+import Product from "./components/shop/Product";
+import Shop from "./components/shop/Shop";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
           <Header></Header>
           <Switch>
             <Route exact path="/" component={Home}></Route>
+            <Route path="/product/:product_id" component={Product}></Route>
+            <Route path="/shop" component={Shop}></Route>
             <PrivateRoute path="/dashboard" component={Dashboard}></PrivateRoute>
             <AdminRoute path="/create/category" component={AddCategory}></AdminRoute>
             <AdminRoute path="/create/product" component={AddProduct}></AdminRoute>

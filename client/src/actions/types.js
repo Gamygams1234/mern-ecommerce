@@ -5,3 +5,4 @@ export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGOUT = "LOGOUT";
 export const GET_PRODUCTS = "GET_PRODUCTS";
 export const GET_NEW_PRODUCTS = "GET_NEW_PRODUCTS";
+export const GET_ONE_PRODUCT = "GET_ONE_PRODUCT";
