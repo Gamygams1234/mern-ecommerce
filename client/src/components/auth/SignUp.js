@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { signup } from "../../actions/auth";
+import { signup, resetMessages } from "../../actions/auth";
 import PropTypes from "prop-types";
 
-const SignUp = ({ isAuthenticated, signup, serverError }) => {
+const SignUp = ({ isAuthenticated, signup, error, resetMessages }) => {
   const emailTest = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     name: "",
     password2: "",
-    error: "",
+    pageError: "",
   });
-
-  const { email, password, name, password2, error } = formData;
+  useEffect(() => {
+    resetMessages();
+  }, []);
+  const { email, password, name, password2, pageError } = formData;
 
   const onChange = (e) => setFormData({ ...formData, error: false, [e.target.name]: e.target.value });
   const showError = () => (
@@ -22,13 +24,20 @@ const SignUp = ({ isAuthenticated, signup, serverError }) => {
       {error}
     </div>
   );
+  const showPageError = () => (
+    <div className="alert alert-danger" style={{ display: pageError ? "" : "none" }}>
+      {pageError}
+    </div>
+  );
   const onSubmit = (e) => {
     e.preventDefault();
     if (password !== password2) {
-      setFormData({ ...formData, error: "Passwords do not match!" });
+      resetMessages();
+      setFormData({ ...formData, pageError: "Passwords do not match!" });
       window.scrollTo(0, 0);
     } else if (!emailTest.test(email)) {
-      setFormData({ ...formData, error: "Email is not in correct format!" });
+      resetMessages();
+      setFormData({ ...formData, pageError: "Email is not in correct format!" });
     } else {
       window.scrollTo(0, 0);
       signup({ name, email, password });
@@ -43,6 +52,7 @@ const SignUp = ({ isAuthenticated, signup, serverError }) => {
     <div className="container pt-4 pb-4">
       <h2>Sign Up</h2>
       {showError()}
+      {showPageError()}
       <form className="pt-4" onSubmit={onSubmit}>
         <div className="form-group">
           <label>Username</label>
@@ -79,11 +89,12 @@ const SignUp = ({ isAuthenticated, signup, serverError }) => {
 
 SignUp.propType = {
   signup: PropTypes.func.isRequired,
+  resetMessages: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  serverError: state.auth.serverError,
+  error: state.auth.error,
 });
 
-export default connect(mapStateToProps, { signup })(SignUp);
+export default connect(mapStateToProps, { signup, resetMessages })(SignUp);

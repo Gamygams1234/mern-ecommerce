@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { logout } from "../actions/auth";
 
-const Header = ({ isAuthenticated, logout }) => {
+const Header = ({ isAuthenticated, logout, cartProducts }) => {
   const authLinks = (
     <div className="navbar-nav">
       <NavLink className="nav-item nav-link" to="/">
@@ -17,6 +17,9 @@ const Header = ({ isAuthenticated, logout }) => {
 
       <NavLink className="nav-item nav-link" to="/dashboard">
         Dashboad
+      </NavLink>
+      <NavLink className="nav-item nav-link" to="/cart">
+        Cart <span class="badge badge-light">{cartProducts.length}</span>
       </NavLink>
     </div>
   );
@@ -37,6 +40,9 @@ const Header = ({ isAuthenticated, logout }) => {
       </NavLink>
       <NavLink className="nav-item nav-link" to="/shop">
         Shop
+      </NavLink>
+      <NavLink className="nav-item nav-link" to="/cart">
+        Cart <span class="badge badge-light">{cartProducts.length}</span>
       </NavLink>
     </div>
   );
@@ -65,6 +71,7 @@ Header.propTypes = {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  cartProducts: state.auth.cartProducts,
 });
 
 export default connect(mapStateToProps, { logout })(Header);

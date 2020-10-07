@@ -134,7 +134,7 @@ exports.listProducts = (req, res) => {
 };
 
 exports.relatedProducts = (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+  let limit = req.query.limit ? parseInt(req.query.limit) : 3;
 
   Product.find({ _id: { $ne: req.product }, category: req.product.category })
     .limit(limit)
@@ -186,6 +186,35 @@ exports.searchProducts = (req, res) => {
     .sort([[sortBy, order]])
     .skip(skip)
     .limit(limit)
+    .exec((err, data) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Products not found",
+        });
+      }
+      res.json({
+        size: data.length,
+        data,
+      });
+    });
+};
+
+exports.productPhoto = (req, res, next) => {
+  if (req.product.photo.data) {
+    res.set("Content-Type", req.product.photo.contentType);
+    return res.send(req.product.photo.data);
+  }
+  next();
+};
+
+exports.listSearch = (req, res) => {
+  let filters = req.body;
+
+  Product.find(filters)
+    .select("-photo")
+    .populate("category")
+    .sort([["_id", "desc"]])
+
     .exec((err, data) => {
       if (err) {
         return res.status(400).json({

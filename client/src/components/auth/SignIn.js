@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { login } from "../../actions/auth";
+import { login, resetMessages } from "../../actions/auth";
 
-const SignIn = ({ isAuthenticated, login }) => {
+const SignIn = ({ isAuthenticated, login, error, resetMessages }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    error: "",
   });
 
-  const { email, password, error } = formData;
-
+  const { email, password } = formData;
+  useEffect(() => {
+    resetMessages();
+  }, []);
   const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const onSubmit = (e) => {
     e.preventDefault();
@@ -29,7 +30,8 @@ const SignIn = ({ isAuthenticated, login }) => {
   );
 
   return (
-    <div className="container pt-4">
+    <div className="container pt-4 mb-5">
+      {showError()}
       <h2>Sign In</h2>
       <form onSubmit={onSubmit}>
         <div className="form-group">
@@ -58,10 +60,12 @@ const SignIn = ({ isAuthenticated, login }) => {
 
 SignIn.propType = {
   login: PropTypes.func.isRequired,
+  resetMessages: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  error: state.auth.error,
 });
 
-export default connect(mapStateToProps, { login })(SignIn);
+export default connect(mapStateToProps, { login, resetMessages })(SignIn);

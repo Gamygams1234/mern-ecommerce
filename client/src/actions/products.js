@@ -1,6 +1,6 @@
 import queryString from "query-string";
 import axios from "axios";
-import { GET_PRODUCTS, GET_NEW_PRODUCTS, GET_ONE_PRODUCT } from "./types";
+import { GET_PRODUCTS, GET_NEW_PRODUCTS, GET_ONE_PRODUCT, GET_RELATED_PRODUCTS } from "./types";
 
 export const getProducts = (sortBy = "sold") => (dispatch) => {
   axios
@@ -9,6 +9,27 @@ export const getProducts = (sortBy = "sold") => (dispatch) => {
       dispatch({
         type: GET_PRODUCTS,
         payload: res.data,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const getSearchProducts = (input) => (dispatch) => {
+  const data = JSON.stringify(input);
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  axios
+    .post(`/api/products/search`, data, config)
+    .then((res) => {
+      console.log(res.data);
+      dispatch({
+        type: GET_PRODUCTS,
+        payload: res.data.data,
       });
     })
     .catch((err) => {
@@ -36,6 +57,7 @@ export const getFilteredProducts = (skip, limit, filters = {}) => (dispatch) => 
     skip,
     filters,
   });
+  console.log(data);
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -101,6 +123,20 @@ export const getCategories = () => {
     .get(`/api/category/all`)
     .then((res) => {
       return res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const getRelatedProducts = (productId) => (dispatch) => {
+  axios
+    .get(`/api/products/related/${productId}`)
+    .then((res) => {
+      dispatch({
+        type: GET_RELATED_PRODUCTS,
+        payload: res.data,
+      });
     })
     .catch((err) => {
       console.log(err);
