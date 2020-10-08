@@ -1,4 +1,3 @@
-import queryString from "query-string";
 import axios from "axios";
 import { GET_PRODUCTS, GET_NEW_PRODUCTS, GET_ONE_PRODUCT, GET_RELATED_PRODUCTS } from "./types";
 

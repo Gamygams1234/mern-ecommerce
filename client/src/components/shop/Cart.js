@@ -1,30 +1,61 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { getProducts, getFilteredProducts, getSearchProducts } from "../../actions/products";
-import { removeFromCart, emptyCart, resetMessages } from "../../actions/auth";
+import { removeFromCart, emptyCart, resetMessages, getBraintreeClientToken, loadUser } from "../../actions/auth";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import axios from "axios";
 import AmountForm from "./AmountForm";
+import DropIn from "braintree-web-drop-in-react";
 
-const Cart = ({ removeFromCart, cartProducts, message, emptyCart, resetMessages }) => {
+const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCart, resetMessages, braintreeToken, userID, token, getBraintreeClientToken, loadUser }) => {
   let subtotal = 0;
   cartProducts.map((cartProduct) => {
     subtotal += cartProduct.quantity * cartProduct.product.price;
   });
 
-  const removeAll = () => {
-    emptyCart();
-  };
+  const [data, setData] = useState({
+    instance: {},
+    address: "",
+  });
+
   const showSuccess = () => (
     <div className="alert alert-success" style={{ display: message ? "" : "none" }}>
       {message}
     </div>
   );
 
+  const showDropIn = () => (
+    <div>
+      <DropIn options={{ authorization: braintreeToken }} onInstance={(instance) => (instance = instance)} />
+    </div>
+  );
+
+  const showCheckout = () => {
+    return braintreeToken && isAuthenticated ? (
+      <div>{showDropIn()}</div>
+    ) : (
+      <Link to="/sign-in">
+        <button className="btn btn-primary">Sign in to checkout</button>
+      </Link>
+    );
+  };
+
+  const removeAll = () => {
+    emptyCart();
+  };
+
   useEffect(() => {
+    if (localStorage.getItem("jwtUser")) {
+      let user = localStorage.getItem("jwtUser");
+      user = JSON.parse(user);
+      let token = localStorage.getItem("jwtToken");
+      getBraintreeClientToken(user._id, token);
+    }
+
     resetMessages();
-  }, []);
+  }, [getBraintreeClientToken, resetMessages]);
+
   return (
     <div>
       <div className="jumbotron shop-product jumbotron-fluid bg-dark text-white ">
@@ -88,12 +119,10 @@ const Cart = ({ removeFromCart, cartProducts, message, emptyCart, resetMessages 
               ))}
             </div>
           </div>
-          <div class="col-md col-xl-5 ml-auto">
+          <div className="col-md col-xl-5 ml-auto">
             <h2>Checkout </h2>
             <h5>Your total price is ${subtotal.toFixed(2)}</h5>
-            <button type="submit" className="btn btn-success ">
-              Checkout
-            </button>
+            {showCheckout()}
           </div>
         </div>
       </div>
@@ -108,12 +137,17 @@ Cart.propType = {
   removeFromCart: PropTypes.func.isRequired,
   emptyCart: PropTypes.func.isRequired,
   resetMessages: PropTypes.func.isRequired,
+  getBraintreeClientToken: PropTypes.func.isRequired,
+  loadUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   cartProducts: state.auth.cartProducts,
   message: state.auth.message,
+  token: state.auth.token,
+  userID: state.auth.user._id,
+  braintreeToken: state.auth.braintreeToken,
 });
 
-export default connect(mapStateToProps, { getProducts, getFilteredProducts, getSearchProducts, removeFromCart, emptyCart, resetMessages })(Cart);
+export default connect(mapStateToProps, { getProducts, getFilteredProducts, getSearchProducts, removeFromCart, emptyCart, resetMessages, getBraintreeClientToken, loadUser })(Cart);

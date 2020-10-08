@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { getProducts, getNewProducts } from "./actions/products";
 
-import axios from "axios";
-
 const Home = ({ products, getProducts, newProducts, getNewProducts }) => {
   useEffect(() => {
     getProducts();
     getNewProducts();
-  }, []);
+  }, [getProducts, getNewProducts]);
 
   return (
     <div>

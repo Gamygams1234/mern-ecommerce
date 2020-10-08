@@ -1,12 +1,11 @@
 import axios from "axios";
 import { authenticate } from "../../src/utils/setAuthToken";
-import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, ADD_TO_CART, REMOVE_FROM_CART, USER_LOADED, CART_LOADED, EMPTY_CART, RESET_MESSAGES, INVALID_CREDENTIALS } from "./types";
+import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, ADD_TO_CART, REMOVE_FROM_CART, USER_LOADED, CART_LOADED, EMPTY_CART, RESET_MESSAGES, INVALID_CREDENTIALS, GET_BRAINTREE_CLIENT_TOKEN, SEND_ERROR } from "./types";
 
 export const loadUser = () => (dispatch) => {
   if (localStorage.getItem("jwtUser")) {
     let user = localStorage.getItem("jwtUser");
     user = JSON.parse(user);
-    console.log(user);
     dispatch({
       type: USER_LOADED,
       payload: { user: user },
@@ -120,4 +119,31 @@ export const resetMessages = () => (dispatch) => {
   dispatch({
     type: RESET_MESSAGES,
   });
+};
+
+export const getBraintreeClientToken = (userID, token) => (dispatch) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  axios
+    .get(`/api/braintree/getToken/${userID}`, config)
+    .then((res) => {
+      console.log(res.data.clientToken);
+      dispatch({
+        type: GET_BRAINTREE_CLIENT_TOKEN,
+        payload: res.data.clientToken,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      console.log(userID);
+      // dispatch({
+      //   type: SEND_ERROR,
+      //   payload: "There is an error processing the request.",
+      // });
+    });
 };

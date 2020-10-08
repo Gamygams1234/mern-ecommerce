@@ -11,7 +11,7 @@ const Header = ({ isAuthenticated, logout, cartProducts }) => {
         Home <span className="sr-only"></span>
       </NavLink>
 
-      <a className="nav-item nav-link" onClick={logout} href="#!">
+      <a className="nav-item nav-link" onClick={logout} href="/">
         <i className="fas fa-sign-out-alt" /> <span className="hide-sm">Logout</span>
       </a>
 

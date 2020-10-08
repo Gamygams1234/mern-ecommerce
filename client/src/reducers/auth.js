@@ -1,12 +1,15 @@
-import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, ADD_TO_CART, REMOVE_FROM_CART, USER_LOADED, CART_LOADED, EMPTY_CART, RESET_MESSAGES, INVALID_CREDENTIALS } from "../actions/types";
+import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, ADD_TO_CART, REMOVE_FROM_CART, USER_LOADED, CART_LOADED, EMPTY_CART, RESET_MESSAGES, INVALID_CREDENTIALS, GET_BRAINTREE_CLIENT_TOKEN, SEND_ERROR } from "../actions/types";
 
 const initialState = {
-  token: localStorage.getItem("jwtToken"),
+  token: "",
   isAuthenticated: false,
   user: {},
   cartProducts: [],
   message: "",
   error: "",
+  braintreeToken: "",
+  address: "",
+  instance: {},
 };
 
 export default function (state = initialState, action) {
@@ -15,9 +18,10 @@ export default function (state = initialState, action) {
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
       return { ...state, user: payload, token: localStorage.getItem("jwtToken"), isAuthenticated: true, loading: false };
-
+    case GET_BRAINTREE_CLIENT_TOKEN:
+      return { ...state, braintreeToken: payload };
     case LOGOUT:
-      return { ...state, isAuthenticated: false, cartProducts: [], user: {}, loading: false };
+      return { ...state, isAuthenticated: false, braintreeToken: "", cartProducts: [], user: {}, token: "", loading: false };
     case USER_LOADED:
       return { ...state, user: payload.user, token: localStorage.getItem("jwtToken"), isAuthenticated: true, loading: false };
     case CART_LOADED:
@@ -28,7 +32,8 @@ export default function (state = initialState, action) {
       return { ...state, message: "", error: "" };
     case INVALID_CREDENTIALS:
       return { ...state, error: payload };
-
+    case SEND_ERROR:
+      return { ...state, error: payload };
     case ADD_TO_CART:
       var exists = false;
       const quantity = action.payload.quantity;
@@ -55,7 +60,6 @@ export default function (state = initialState, action) {
         message: `${newCP.name} has been added to your cart.`,
       };
     case REMOVE_FROM_CART:
-      var payloadProduct = payload;
       var cartProducts = localStorage.getItem("cart");
       cartProducts = JSON.parse(cartProducts);
       cartProducts = cartProducts.filter((product) => product._id !== payload._id);

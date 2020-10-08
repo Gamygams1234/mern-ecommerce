@@ -11,6 +11,7 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const categoryRoute = require("./routes/category");
 const productRoute = require("./routes/product");
+const braintreeRoute = require("./routes/braintree");
 const { requireSignin } = require("./controllers/checks");
 // const cors = require("cors");
 
@@ -43,6 +44,7 @@ app.use("/api", authRoute);
 app.use("/api", userRoute);
 app.use("/api", categoryRoute);
 app.use("/api", productRoute);
+app.use("/api", braintreeRoute);
 
 const port = process.env.PORT || 8000;
 
