@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { getSingleProduct, getRelatedProducts } from "../../actions/products";
 import { addToCart, resetMessages } from "../../actions/auth";
 import AmountForm from "./AmountForm";
-import { set } from "mongoose";
 
 const Product = ({ getSingleProduct, featuredProduct, getRelatedProducts, relatedProducts, message, resetMessages }) => {
   let { product_id } = useParams();
@@ -18,12 +17,6 @@ const Product = ({ getSingleProduct, featuredProduct, getRelatedProducts, relate
       {message}
     </div>
   );
-
-  const componentMount = () => {
-    getSingleProduct(product_id);
-    getRelatedProducts(product_id);
-    resetMessages();
-  };
 
   useEffect(() => {
     getSingleProduct(productId);
@@ -38,13 +31,13 @@ const Product = ({ getSingleProduct, featuredProduct, getRelatedProducts, relate
         <div className="col-md col-xl-7 mb-4">
           <h1>{featuredProduct.name}</h1>
           <div className="card">
-            <img src={`/api/products/photo/${productId}`} class="card-img-top" alt="..." />
+            <img src={`/api/products/photo/${productId}`} className="card-img-top" alt="..." />
             <div className="card-body">
               <h5 className="card-title">{featuredProduct.name}</h5>
               <p className="card-text">{featuredProduct.description}</p>
               <p className="card-text">$ {featuredProduct.price}</p>
               <p className="card-text">Stock Left: {featuredProduct.quantity}</p>
-              <AmountForm title="Add To Cart" product={featuredProduct}></AmountForm>
+              {featuredProduct.quantity > 0 ? <AmountForm title="Add To Cart" product={featuredProduct}></AmountForm> : <button className="btn btn-secondary- mt-2 mb-2 card-btn-1 disabled">Sold Out</button>}
             </div>
           </div>
         </div>
@@ -53,7 +46,7 @@ const Product = ({ getSingleProduct, featuredProduct, getRelatedProducts, relate
           {relatedProducts.length > 0 ? (
             relatedProducts.map((relatedProduct, i) => (
               <div className="card mb-3" key={i}>
-                <img src={`/api/products/photo/${relatedProduct._id}`} class="card-img-top" alt="..." />
+                <img src={`/api/products/photo/${relatedProduct._id}`} className="card-img-top" alt="..." />
                 <div className="card-body">
                   <h5 className="card-title">{relatedProduct.name}</h5>
                   <p className="card-text">$ {relatedProduct.price}</p>

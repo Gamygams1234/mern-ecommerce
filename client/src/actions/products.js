@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_PRODUCTS, GET_NEW_PRODUCTS, GET_ONE_PRODUCT, GET_RELATED_PRODUCTS } from "./types";
+import { GET_PRODUCTS, GET_NEW_PRODUCTS, GET_ONE_PRODUCT, GET_RELATED_PRODUCTS, DELETE_PRODUCT } from "./types";
 
 export const getProducts = (sortBy = "sold") => (dispatch) => {
   axios
@@ -56,7 +56,7 @@ export const getFilteredProducts = (skip, limit, filters = {}) => (dispatch) => 
     skip,
     filters,
   });
-  console.log(data);
+
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -117,17 +117,6 @@ export const getAllProducts = () => (dispatch) => {
     });
 };
 
-export const getCategories = () => {
-  axios
-    .get(`/api/category/all`)
-    .then((res) => {
-      return res.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
 export const getRelatedProducts = (productId) => (dispatch) => {
   axios
     .get(`/api/products/related/${productId}`)
@@ -137,7 +126,42 @@ export const getRelatedProducts = (productId) => (dispatch) => {
         payload: res.data,
       });
     })
+    .catch((err) => {});
+};
+
+export const deleteProduct = (productID, userID, token) => (dispatch) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  axios
+    .delete(`/api/products/delete/${productID}/${userID}`, config)
+    .then((res) => {
+      dispatch({
+        type: DELETE_PRODUCT,
+        payload: productID,
+      });
+    })
     .catch((err) => {
       console.log(err);
     });
+};
+
+export const updateProduct = (productId, userId, token, product) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  axios
+    .put(`/api/product/${productId}/${userId}`, product, config)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((err) => console.log(err));
 };

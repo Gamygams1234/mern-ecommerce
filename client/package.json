@@ -8,6 +8,8 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.20.0",
     "braintree-web-drop-in-react": "^1.2.1",
+    "http-proxy-middleware": "^1.0.5",
+    "moment": "^2.29.1",
     "node-sass": "^4.14.1",
     "query-string": "^6.13.2",
     "react": "^16.13.1",
@@ -40,5 +42,9 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8000"
+  "proxy": {
+    "/api/": {
+      "target": "http://localhost:8000"
+    }
+  }
 }

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getProducts, getFilteredProducts, getSearchProducts } from "../../actions/products";
+import { getProducts, getFilteredProducts, getSearchProducts, deleteProduct } from "../../actions/products";
 import { addToCart, resetMessages } from "../../actions/auth";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import axios from "axios";
-import AmountForm from "./AmountForm";
 
-const Shop = ({ products, getProducts, getFilteredProducts, getSearchProducts, message, resetMessages }) => {
+const EditProducts = ({ products, getProducts, getFilteredProducts, getSearchProducts, resetMessages, deleteProduct, userID, token }) => {
   const [categories, setCategories] = useState([]);
   const [displayHeader, setDisplayHeader] = useState("");
   const [search, setSearch] = useState("");
   const [madeSearch, setMadeSearch] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setSearch(e.target.value);
@@ -46,7 +46,7 @@ const Shop = ({ products, getProducts, getFilteredProducts, getSearchProducts, m
   function makingCategory(arg) {
     const category = { category: arg };
     getFilteredProducts(0, 100, category);
-    setMadeSearch(true);
+    setMadeSearch(false);
   }
 
   const showSuccess = () => (
@@ -131,6 +131,11 @@ const Shop = ({ products, getProducts, getFilteredProducts, getSearchProducts, m
                     ) : (
                       <p>There are no categories to browse.</p>
                     )}
+
+                    <div className="dropdown-divider"></div>
+                    <a className="dropdown-item" href="#">
+                      Something else here
+                    </a>
                   </div>
                 </li>
               </ul>
@@ -148,24 +153,29 @@ const Shop = ({ products, getProducts, getFilteredProducts, getSearchProducts, m
                         <h5 className="card-title">{product.name}</h5>
                         <p className="card-text">$ {product.price}</p>
                         <p className="card-text">Stock Left: {product.quantity}</p>
-                        {product.quantity > 0 ? <AmountForm title="Add To Cart" product={product}></AmountForm> : <button className="btn btn-secondary- mt-2 mb-2 card-btn-1 disabled">Sold Out</button>}
-                        <Link to={`/product/${product._id}`} className="mr-2">
-                          <button className="btn btn-outline-primary mt-2 mb-2 card-btn-1">View Product</button>
+
+                        <Link to={`/admin/product/update/${product._id}`} className="mr-2">
+                          <button className="btn btn-outline-primary mt-2 mb-2 card-btn-1">Edit Product</button>
                         </Link>
+                        <button
+                          onClick={() => {
+                            deleteProduct(product._id, userID, token);
+                            setMessage(`The product ${product.name} has been deleted.`);
+                            window.scrollTo(0, 0);
+                          }}
+                          className="btn btn-outline-danger mt-2 mb-2 card-btn-1"
+                        >
+                          Delete Product
+                        </button>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : madeSearch ? (
-              <div>
-                <h4>Sorry, there are no products matching thet search.</h4>
-                <h4>We will restock soon.</h4>
-              </div>
+              <h4>Sorry, there are no products matching thet search.</h4>
             ) : (
-              <div>
-                <h3>There are no products to display at this time.</h3>
-              </div>
+              <h4>There are no products to display at this time.</h4>
             )}
           </div>
         </div>
@@ -174,17 +184,17 @@ const Shop = ({ products, getProducts, getFilteredProducts, getSearchProducts, m
   );
 };
 
-Shop.propType = {
+EditProducts.propType = {
   getProducts: PropTypes.func.isRequired,
+  deleteProduct: PropTypes.func.isRequired,
   getFilteredProducts: PropTypes.func.isRequired,
   getSearchProducts: PropTypes.func.isRequired,
-  addToCart: PropTypes.func.isRequired,
-  resetMessages: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   products: state.products.products,
-  message: state.auth.message,
+  token: state.auth.token,
+  userID: state.auth.user._id,
 });
 
-export default connect(mapStateToProps, { getProducts, getFilteredProducts, getSearchProducts, addToCart, resetMessages })(Shop);
+export default connect(mapStateToProps, { getProducts, getFilteredProducts, getSearchProducts, addToCart, resetMessages, deleteProduct })(EditProducts);

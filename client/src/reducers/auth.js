@@ -1,4 +1,4 @@
-import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, ADD_TO_CART, REMOVE_FROM_CART, USER_LOADED, CART_LOADED, EMPTY_CART, RESET_MESSAGES, INVALID_CREDENTIALS, GET_BRAINTREE_CLIENT_TOKEN, SEND_ERROR } from "../actions/types";
+import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT, ADD_TO_CART, REMOVE_FROM_CART, USER_LOADED, CART_LOADED, EMPTY_CART, RESET_MESSAGES, INVALID_CREDENTIALS, GET_BRAINTREE_CLIENT_TOKEN, SEND_ERROR, GET_ALL_ORDERS } from "../actions/types";
 
 const initialState = {
   token: "",
@@ -10,6 +10,8 @@ const initialState = {
   braintreeToken: "",
   address: "",
   instance: {},
+  orders: [],
+  featuredOrder: {},
 };
 
 export default function (state = initialState, action) {
@@ -21,7 +23,7 @@ export default function (state = initialState, action) {
     case GET_BRAINTREE_CLIENT_TOKEN:
       return { ...state, braintreeToken: payload };
     case LOGOUT:
-      return { ...state, isAuthenticated: false, braintreeToken: "", cartProducts: [], user: {}, token: "", loading: false };
+      return { ...state, isAuthenticated: false, braintreeToken: "", cartProducts: [], user: {}, token: "", loading: false, orders: [], featuredOrder: {} };
     case USER_LOADED:
       return { ...state, user: payload.user, token: localStorage.getItem("jwtToken"), isAuthenticated: true, loading: false };
     case CART_LOADED:
@@ -69,6 +71,8 @@ export default function (state = initialState, action) {
         cartProducts: cartProducts,
         message: `${payload.product.name} has been removed from the cart.`,
       };
+    case GET_ALL_ORDERS:
+      return { ...state, orders: payload };
     default:
       return state;
   }

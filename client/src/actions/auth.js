@@ -1,6 +1,6 @@
 import axios from "axios";
 import { authenticate } from "../../src/utils/setAuthToken";
-import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, ADD_TO_CART, REMOVE_FROM_CART, USER_LOADED, CART_LOADED, EMPTY_CART, RESET_MESSAGES, INVALID_CREDENTIALS, GET_BRAINTREE_CLIENT_TOKEN, SEND_ERROR } from "./types";
+import { REGISTER_SUCCESS, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, ADD_TO_CART, REMOVE_FROM_CART, USER_LOADED, CART_LOADED, EMPTY_CART, RESET_MESSAGES, INVALID_CREDENTIALS, GET_BRAINTREE_CLIENT_TOKEN, SEND_ERROR, GET_ALL_ORDERS } from "./types";
 
 export const loadUser = () => (dispatch) => {
   if (localStorage.getItem("jwtUser")) {
@@ -14,7 +14,7 @@ export const loadUser = () => (dispatch) => {
 };
 export const signup = ({ name, email, password }) => (dispatch) => {
   var postData = JSON.stringify({ name, email, password });
-  console.log(postData);
+
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export const signup = ({ name, email, password }) => (dispatch) => {
 
 export const login = ({ email, password }) => (dispatch) => {
   var postData = JSON.stringify({ email, password });
-  console.log(postData);
+
   const config = {
     headers: {
       "Content-Type": "application/json;charset=UTF-8",
@@ -132,18 +132,34 @@ export const getBraintreeClientToken = (userID, token) => (dispatch) => {
   axios
     .get(`/api/braintree/getToken/${userID}`, config)
     .then((res) => {
-      console.log(res.data.clientToken);
       dispatch({
         type: GET_BRAINTREE_CLIENT_TOKEN,
         payload: res.data.clientToken,
       });
     })
     .catch((err) => {
-      console.log(err);
-      console.log(userID);
-      // dispatch({
-      //   type: SEND_ERROR,
-      //   payload: "There is an error processing the request.",
-      // });
+      dispatch({
+        type: SEND_ERROR,
+        payload: "There is an error processing the request.",
+      });
     });
+};
+
+export const getAllOrders = (userId, token) => (dispatch) => {
+  const config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  axios
+    .get(`/api/order/list/${userId}`, config)
+    .then((res) => {
+      dispatch({
+        type: GET_ALL_ORDERS,
+        payload: res.data,
+      });
+    })
+    .catch((err) => {});
 };

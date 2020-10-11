@@ -12,8 +12,9 @@ const userRoute = require("./routes/user");
 const categoryRoute = require("./routes/category");
 const productRoute = require("./routes/product");
 const braintreeRoute = require("./routes/braintree");
+const orderRoute = require("./routes/order");
 const { requireSignin } = require("./controllers/checks");
-// const cors = require("cors");
+const cors = require("cors");
 
 const app = express();
 
@@ -27,14 +28,13 @@ mongoose
   .catch((error) => {
     console.error(error);
   });
-// middleware
-//morgan will help with the console log in the terminal
+
 app.use(morgan("dev"));
-// body parser helps us parse the data
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressValidator());
-// app.use(cors());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("If she sees my stacks");
@@ -45,6 +45,7 @@ app.use("/api", userRoute);
 app.use("/api", categoryRoute);
 app.use("/api", productRoute);
 app.use("/api", braintreeRoute);
+app.use("/api", orderRoute);
 
 const port = process.env.PORT || 8000;
 

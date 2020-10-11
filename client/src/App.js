@@ -16,6 +16,12 @@ import Product from "./components/shop/Product";
 import Shop from "./components/shop/Shop";
 import Cart from "./components/shop/Cart";
 import { loadUser, loadCart } from "./actions/auth";
+import ViewOrders from "./components/AdiminRoutes/ViewOrders";
+import Order from "./components/AdiminRoutes/Order";
+import EditProducts from "./components/AdiminRoutes/EditProducts";
+import UpdateProduct from "./components/AdiminRoutes/UpdateProduct";
+import UserOrders from "./components/shop/UserOrders";
+import UserSingleOrder from "./components/shop/UserSingleOrder";
 
 const App = () => {
   useEffect(() => {
@@ -37,6 +43,12 @@ const App = () => {
               <PrivateRoute path="/dashboard" component={Dashboard}></PrivateRoute>
               <AdminRoute path="/create/category" component={AddCategory}></AdminRoute>
               <AdminRoute path="/create/product" component={AddProduct}></AdminRoute>
+              <AdminRoute exact path="/admin/orders" component={ViewOrders}></AdminRoute>
+              <AdminRoute path="/admin/orders/:order_id" component={Order}></AdminRoute>
+              <AdminRoute exact path="/admin/products" component={EditProducts}></AdminRoute>
+              <AdminRoute path="/admin/product/update/:product_id" exact component={UpdateProduct}></AdminRoute>
+              <PrivateRoute exact path="/user/orders" component={UserOrders}></PrivateRoute>
+              <PrivateRoute path="/user/orders/:order_id" component={UserSingleOrder}></PrivateRoute>
               <Route path="/sign-in" component={SignIn}></Route>
               <Route path="/sign-up" component={SignUp}></Route>
               <Route path="/not-admin" component={NotAdmin}></Route>

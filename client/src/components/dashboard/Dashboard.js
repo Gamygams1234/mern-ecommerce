@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -41,15 +41,15 @@ const Dashboard = ({ user }) => {
           </Link>
         </li>
         <li className="list-group-item">
-          <Link className="nav-link" to={`/profile/${user._id}`}>
-            Update Profile
+          <Link className="nav-link" to={`/user/orders`}>
+            View Orders
           </Link>
         </li>
       </ul>
     </div>
   );
   return (
-    <div className="container">
+    <div className="container mb-4">
       <div className="jumbotron">
         <h1 className="display-4">This is the Dashboard</h1>
         <p className="lead">Thanks for coming to my store to check out some of the products.</p>

@@ -11,8 +11,6 @@ require("dotenv").config();
 
 //using this function to read with the param
 exports.readProduct = (req, res) => {
-  // taking out our photo  so we can read the info
-  //might send it again
   req.product.photo = undefined;
   return res.json(req.product);
 };

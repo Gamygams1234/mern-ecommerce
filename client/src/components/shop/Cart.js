@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import AmountForm from "./AmountForm";
 import DropIn from "braintree-web-drop-in-react";
+import { sortedIndex } from "lodash";
 
 const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCart, resetMessages, braintreeToken, userID, token, getBraintreeClientToken, loadUser }) => {
   let subtotal = 0;
@@ -16,24 +17,144 @@ const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCar
 
   const [data, setData] = useState({
     instance: {},
-    address: "",
+
+    paymentError: "",
+    loading: false,
+    success: false,
   });
 
+  const [deliveryAddress, setDeliveryAddress] = useState({
+    address1: "",
+    address2: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+  const onChange = (e) => setDeliveryAddress({ ...deliveryAddress, [e.target.name]: e.target.value });
   const showSuccess = () => (
     <div className="alert alert-success" style={{ display: message ? "" : "none" }}>
       {message}
     </div>
   );
-
-  const showDropIn = () => (
-    <div>
-      <DropIn options={{ authorization: braintreeToken }} onInstance={(instance) => (instance = instance)} />
+  const showPaymentSuccess = (success) => (
+    <div className="alert alert-info" style={{ display: success ? "" : "none" }}>
+      Thanks! Your payment was successful!
+    </div>
+  );
+  const showError = (error) => (
+    <div className="alert alert-danger" style={{ display: error ? "" : "none" }}>
+      {error}
     </div>
   );
 
+  const createOrder = (userId, token, createOrderData) => {
+    createOrderData = JSON.stringify(createOrderData);
+    const config = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios
+      .post(`/api/order/create/${userId}`, createOrderData, config)
+      .then((response) => {})
+      .catch((err) => console.log(err.message));
+  };
+
+  const buy = () => {
+    setData({ loading: true });
+    let nonce;
+    let getNonce = data.instance
+      .requestPaymentMethod()
+      .then((data) => {
+        nonce = data.nonce;
+
+        const paymentData = {
+          paymentMethodNonce: nonce,
+          amount: subtotal.toFixed(2),
+        };
+
+        const config = {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        axios
+          .post(`/api/braintree/payment/${userID}`, paymentData, config)
+          .then((response) => {
+            const createOrderData = {
+              user: userID,
+              products: cartProducts,
+              transaction_id: response.data.transaction.id,
+              amount: response.data.transaction.amount,
+              address: deliveryAddress,
+            };
+
+            setData({ loading: false, success: true });
+            emptyCart();
+
+            return createOrderData;
+          })
+          .then((res) => {
+            createOrder(userID, token, res);
+          })
+          .catch((err) => {
+            console.log(err.message);
+            setData({ ...data, paymentError: err.message });
+          });
+      })
+      .catch((error) => {
+        setData({ ...data, paymentError: error.message });
+      });
+  };
+  const showDropIn = () => {
+    return cartProducts.length > 0 ? (
+      <div onBlur={() => setData({ ...data, paymentError: "" })}>
+        <div className="form-group">
+          <label>Address</label>
+          <input value={deliveryAddress.address1} name="address1" onChange={(e) => onChange(e)} type="text" className="form-control" id="inputAddress" placeholder="1234 Main St" />
+        </div>
+        <div className="form-group">
+          <label>Address 2</label>
+          <input value={deliveryAddress.address2} name="address2" onChange={(e) => onChange(e)} type="text" className="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" />
+        </div>
+        <div className="form-row">
+          <div className="form-group col-md-5">
+            <label>City</label>
+            <input value={deliveryAddress.city} name="city" onChange={(e) => onChange(e)} type="text" className="form-control" id="inputCity" />
+          </div>
+          <div className="form-group col-md-4">
+            <label>State</label>
+            <input value={deliveryAddress.state} name="state" onChange={(e) => onChange(e)} type="text" className="form-control" id="inputState" />
+          </div>
+          <div className="form-group col-md-3">
+            <label>Zip</label>
+            <input value={deliveryAddress.zip} name="zip" type="text" onChange={(e) => onChange(e)} className="form-control" id="inputZip" />
+          </div>
+        </div>
+        <DropIn options={{ authorization: braintreeToken }} onInstance={(instance) => (data.instance = instance)} />
+        <button
+          onClick={() => {
+            buy();
+          }}
+          className="btn btn-success btn-block"
+        >
+          Checkout
+        </button>
+      </div>
+    ) : null;
+  };
+
   const showCheckout = () => {
-    return braintreeToken && isAuthenticated ? (
-      <div>{showDropIn()}</div>
+    return isAuthenticated ? (
+      braintreeToken ? (
+        <div>{showDropIn()}</div>
+      ) : null
     ) : (
       <Link to="/sign-in">
         <button className="btn btn-primary">Sign in to checkout</button>
@@ -73,7 +194,7 @@ const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCar
         {showSuccess()}
 
         <div className="row ">
-          <div class="col-md col-xl-5">
+          <div className="col-md col-xl-5">
             <h2>There are {cartProducts.length} products in your cart.</h2>
 
             <div className="row row-cols-1  container">
@@ -120,6 +241,8 @@ const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCar
             </div>
           </div>
           <div className="col-md col-xl-5 ml-auto">
+            {showError(data.paymentError)}
+            {showPaymentSuccess(data.success)}
             <h2>Checkout </h2>
             <h5>Your total price is ${subtotal.toFixed(2)}</h5>
             {showCheckout()}

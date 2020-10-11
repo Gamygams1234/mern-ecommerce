@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const { errorHandler } = require("../helpers/dbErrorHandler");
+
 const jwt = require("jsonwebtoken");
 
 // making sure we can get our dot env file

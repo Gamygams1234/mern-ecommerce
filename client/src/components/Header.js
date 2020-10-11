@@ -11,16 +11,18 @@ const Header = ({ isAuthenticated, logout, cartProducts }) => {
         Home <span className="sr-only"></span>
       </NavLink>
 
-      <a className="nav-item nav-link" onClick={logout} href="/">
-        <i className="fas fa-sign-out-alt" /> <span className="hide-sm">Logout</span>
-      </a>
-
       <NavLink className="nav-item nav-link" to="/dashboard">
         Dashboad
       </NavLink>
-      <NavLink className="nav-item nav-link" to="/cart">
-        Cart <span class="badge badge-light">{cartProducts.length}</span>
+      <NavLink className="nav-item nav-link" to="/shop">
+        Shop
       </NavLink>
+      <NavLink className="nav-item nav-link" to="/cart">
+        Cart <span className="badge badge-light">{cartProducts.length}</span>
+      </NavLink>
+      <a className="nav-item nav-link" onClick={logout} href="/">
+        <i className="fas fa-sign-out-alt" /> <span className="hide-sm">Logout</span>
+      </a>
     </div>
   );
 
@@ -35,14 +37,12 @@ const Header = ({ isAuthenticated, logout, cartProducts }) => {
       <NavLink className="nav-item nav-link" to="/sign-up">
         Sign Up
       </NavLink>
-      <NavLink className="nav-item nav-link" to="/dashboard">
-        Dashboard
-      </NavLink>
+
       <NavLink className="nav-item nav-link" to="/shop">
         Shop
       </NavLink>
       <NavLink className="nav-item nav-link" to="/cart">
-        Cart <span class="badge badge-light">{cartProducts.length}</span>
+        Cart <span className="badge badge-light">{cartProducts.length}</span>
       </NavLink>
     </div>
   );
