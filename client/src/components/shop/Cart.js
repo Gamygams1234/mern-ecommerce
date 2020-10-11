@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getProducts, getFilteredProducts, getSearchProducts } from "../../actions/products";
 import { removeFromCart, emptyCart, resetMessages, getBraintreeClientToken, loadUser } from "../../actions/auth";
 import { connect } from "react-redux";
@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import AmountForm from "./AmountForm";
 import DropIn from "braintree-web-drop-in-react";
-import { sortedIndex } from "lodash";
 
 const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCart, resetMessages, braintreeToken, userID, token, getBraintreeClientToken, loadUser }) => {
   let subtotal = 0;
@@ -170,12 +169,12 @@ const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCar
     if (localStorage.getItem("jwtUser")) {
       let user = localStorage.getItem("jwtUser");
       user = JSON.parse(user);
-      let token = localStorage.getItem("jwtToken");
-      getBraintreeClientToken(user._id, token);
+      let jwtToken = localStorage.getItem("jwtToken");
+      getBraintreeClientToken(user._id, jwtToken);
     }
 
     resetMessages();
-  }, [getBraintreeClientToken, resetMessages]);
+  }, []);
 
   return (
     <div>
