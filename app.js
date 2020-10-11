@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 // this is ggetting the user routes
 
 const expressValidator = require("express-validator");
@@ -36,16 +37,21 @@ app.use(cookieParser());
 app.use(expressValidator());
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("If she sees my stacks");
-});
-
 app.use("/api", authRoute);
 app.use("/api", userRoute);
 app.use("/api", categoryRoute);
 app.use("/api", productRoute);
 app.use("/api", braintreeRoute);
 app.use("/api", orderRoute);
+
+// serve static assets
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 const port = process.env.PORT || 8000;
 
