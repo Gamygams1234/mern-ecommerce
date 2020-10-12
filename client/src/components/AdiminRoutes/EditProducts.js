@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 
 const EditProducts = ({ products, getProducts, getFilteredProducts, getSearchProducts, resetMessages, deleteProduct, userID, token }) => {
+  // setting state
   const [categories, setCategories] = useState([]);
   const [displayHeader, setDisplayHeader] = useState("");
   const [search, setSearch] = useState("");
@@ -32,6 +33,7 @@ const EditProducts = ({ products, getProducts, getFilteredProducts, getSearchPro
     resetMessages();
   }, []);
 
+  // getting our existing category for select toggle
   const fetchCategories = () => {
     axios
       .get(`/api/category/all`)
@@ -43,7 +45,8 @@ const EditProducts = ({ products, getProducts, getFilteredProducts, getSearchPro
       });
   };
 
-  function makingCategory(arg) {
+  // when we click the category, filtering the category
+  function getCategorySearch(arg) {
     const category = { category: arg };
     getFilteredProducts(0, 100, category);
     setMadeSearch(false);
@@ -119,7 +122,7 @@ const EditProducts = ({ products, getProducts, getFilteredProducts, getSearchPro
                           <a
                             className="dropdown-item"
                             onClick={() => {
-                              makingCategory(item._id);
+                              getCategorySearch(item._id);
                               setDisplayHeader(`You are now seeing ${item.name}`);
                             }}
                             key={i}

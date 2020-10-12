@@ -37,7 +37,6 @@ const Header = ({ isAuthenticated, logout, cartProducts }) => {
       <NavLink className="nav-item nav-link" to="/sign-up">
         Sign Up
       </NavLink>
-
       <NavLink className="nav-item nav-link" to="/shop">
         Shop
       </NavLink>

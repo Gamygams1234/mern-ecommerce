@@ -4,10 +4,11 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 const AddCategory = ({ user, token }) => {
+  // setting state
   const [name, setName] = useState("");
   const [clientError, setError] = useState(false);
   const [success, setSuccess] = useState(false);
-
+  // handling change
   const handleChange = (e) => {
     setError("");
     setSuccess("");
@@ -16,10 +17,12 @@ const AddCategory = ({ user, token }) => {
 
   const submit = (e) => {
     e.preventDefault();
+    // clearing the error
     setError("");
     let category = {
       name: name,
     };
+    // making the category to JSON string
     category = JSON.stringify(category);
     const config = {
       headers: {
@@ -27,6 +30,7 @@ const AddCategory = ({ user, token }) => {
         Authorization: `Bearer ${token}`,
       },
     };
+    // posting the category
     axios
       .post(`/api/category/create/${user._id}`, category, config)
       .then((res) => {

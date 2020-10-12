@@ -6,6 +6,7 @@ import moment from "moment";
 const Order = ({ orders }) => {
   let { order_id } = useParams();
 
+  // filtering the single order by ID
   var featuredOrder = orders.filter(function (order) {
     return order._id === order_id;
   });
@@ -20,7 +21,7 @@ const Order = ({ orders }) => {
             <li className="list-group-item">Transaction ID: {featuredOrder.transaction_id}</li>
             <li className="list-group-item">Total amount: ${featuredOrder.amount}</li>
             <li className="list-group-item">Ordered by: {featuredOrder.user.name}</li>
-            <li className="list-group-item"> Ordered on: {moment(featuredOrder.createdAt).fromNow()}</li>
+            <li className="list-group-item"> Ordered: {moment(featuredOrder.createdAt).fromNow()}</li>
             <li className="list-group-item">
               <h5>Address:</h5>
               <p>{featuredOrder.address.address1}</p>

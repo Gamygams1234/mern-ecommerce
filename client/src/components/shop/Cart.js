@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProducts, getFilteredProducts, getSearchProducts } from "../../actions/products";
-import { removeFromCart, emptyCart, resetMessages, getBraintreeClientToken, loadUser } from "../../actions/auth";
+import { removeFromCart, emptyCart, resetMessages, getBraintreeClientToken } from "../../actions/auth";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import axios from "axios";
 import AmountForm from "./AmountForm";
 import DropIn from "braintree-web-drop-in-react";
 
-const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCart, resetMessages, braintreeToken, userID, token, getBraintreeClientToken, loadUser }) => {
+const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCart, resetMessages, braintreeToken, userID, token, getBraintreeClientToken }) => {
   let subtotal = 0;
   cartProducts.map((cartProduct) => {
     subtotal += cartProduct.quantity * cartProduct.product.price;
@@ -16,7 +16,6 @@ const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCar
 
   const [data, setData] = useState({
     instance: {},
-
     paymentError: "",
     loading: false,
     success: false,
@@ -63,53 +62,68 @@ const Cart = ({ removeFromCart, isAuthenticated, cartProducts, message, emptyCar
   };
 
   const buy = () => {
-    setData({ loading: true });
-    let nonce;
-    let getNonce = data.instance
-      .requestPaymentMethod()
-      .then((data) => {
-        nonce = data.nonce;
+    // checking for address in the front end
+    if (deliveryAddress.address1 === "") {
+      window.scrollTo(0, 0);
+      setData({ ...data, paymentError: "Please include address" });
+    } else if (deliveryAddress.city === "") {
+      window.scrollTo(0, 0);
+      setData({ ...data, paymentError: "Please include city" });
+    } else if (deliveryAddress.state === "") {
+      window.scrollTo(0, 0);
+      setData({ ...data, paymentError: "Please include state" });
+    } else if (deliveryAddress.zip === "") {
+      window.scrollTo(0, 0);
+      setData({ ...data, paymentError: "Please include zip" });
+    } else {
+      setData({ loading: true });
+      let nonce;
+      data.instance
+        .requestPaymentMethod()
+        .then((data) => {
+          nonce = data.nonce;
 
-        const paymentData = {
-          paymentMethodNonce: nonce,
-          amount: subtotal.toFixed(2),
-        };
+          const paymentData = {
+            paymentMethodNonce: nonce,
+            amount: subtotal.toFixed(2),
+          };
 
-        const config = {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        };
+          const config = {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          };
 
-        axios
-          .post(`/api/braintree/payment/${userID}`, paymentData, config)
-          .then((response) => {
-            const createOrderData = {
-              user: userID,
-              products: cartProducts,
-              transaction_id: response.data.transaction.id,
-              amount: response.data.transaction.amount,
-              address: deliveryAddress,
-            };
+          axios
+            .post(`/api/braintree/payment/${userID}`, paymentData, config)
+            .then((response) => {
+              const createOrderData = {
+                user: userID,
+                products: cartProducts,
+                transaction_id: response.data.transaction.id,
+                amount: response.data.transaction.amount,
+                address: deliveryAddress,
+              };
 
-            setData({ loading: false, success: true });
-            emptyCart();
+              setData({ loading: false, success: true });
+              emptyCart();
 
-            return createOrderData;
-          })
-          .then((res) => {
-            createOrder(userID, token, res);
-          })
-          .catch((err) => {
-            console.log(err.message);
-            setData({ ...data, paymentError: err.message });
-          });
-      })
-      .catch((error) => {
-        setData({ ...data, paymentError: error.message });
-      });
+              return createOrderData;
+            })
+            .then((res) => {
+              createOrder(userID, token, res);
+            })
+            .catch((err) => {
+              console.log(err.message);
+              setData({ ...data, paymentError: err.message });
+            });
+        })
+        .catch((error) => {
+          setData({ ...data, paymentError: error.message });
+        });
+    }
   };
   const showDropIn = () => {
     return cartProducts.length > 0 ? (
@@ -260,7 +274,6 @@ Cart.propType = {
   emptyCart: PropTypes.func.isRequired,
   resetMessages: PropTypes.func.isRequired,
   getBraintreeClientToken: PropTypes.func.isRequired,
-  loadUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -272,4 +285,4 @@ const mapStateToProps = (state) => ({
   braintreeToken: state.auth.braintreeToken,
 });
 
-export default connect(mapStateToProps, { getProducts, getFilteredProducts, getSearchProducts, removeFromCart, emptyCart, resetMessages, getBraintreeClientToken, loadUser })(Cart);
+export default connect(mapStateToProps, { getProducts, getFilteredProducts, getSearchProducts, removeFromCart, emptyCart, resetMessages, getBraintreeClientToken })(Cart);

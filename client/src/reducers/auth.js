@@ -23,7 +23,7 @@ export default function (state = initialState, action) {
     case GET_BRAINTREE_CLIENT_TOKEN:
       return { ...state, braintreeToken: payload };
     case LOGOUT:
-      return { ...state, isAuthenticated: false, braintreeToken: "", cartProducts: [], user: {}, token: "", loading: false, orders: [], featuredOrder: {} };
+      return { ...state, token: "", isAuthenticated: false, user: {}, cartProducts: [], message: "", error: "", braintreeToken: "", address: "", instance: {}, orders: [], featuredOrder: {} };
     case USER_LOADED:
       return { ...state, user: payload.user, token: localStorage.getItem("jwtToken"), isAuthenticated: true, loading: false };
     case CART_LOADED:

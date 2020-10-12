@@ -5,6 +5,7 @@ import { signup, resetMessages } from "../../actions/auth";
 import PropTypes from "prop-types";
 
 const SignUp = ({ isAuthenticated, signup, error, resetMessages }) => {
+  // using regex to test the email
   const emailTest = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
   const [formData, setFormData] = useState({
     email: "",
@@ -19,6 +20,7 @@ const SignUp = ({ isAuthenticated, signup, error, resetMessages }) => {
   const { email, password, name, password2, pageError } = formData;
 
   const onChange = (e) => setFormData({ ...formData, error: false, [e.target.name]: e.target.value });
+  //checking for errors clent side and server side from redux
   const showError = () => (
     <div className="alert alert-danger" style={{ display: error ? "" : "none" }}>
       {error}
@@ -29,7 +31,9 @@ const SignUp = ({ isAuthenticated, signup, error, resetMessages }) => {
       {pageError}
     </div>
   );
+
   const onSubmit = (e) => {
+    // having the checks
     e.preventDefault();
     if (password !== password2) {
       resetMessages();

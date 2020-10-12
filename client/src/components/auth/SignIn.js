@@ -11,6 +11,7 @@ const SignIn = ({ isAuthenticated, login, error, resetMessages }) => {
   });
 
   const { email, password } = formData;
+  // making sure we have no messages to start
   useEffect(() => {
     resetMessages();
   }, []);

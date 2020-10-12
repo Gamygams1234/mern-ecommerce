@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 const Dashboard = ({ user }) => {
+  // setting our links for admin and for user
   const AdminLinks = (
     <div className="card">
       <h4 className="card-header">Admin Links</h4>

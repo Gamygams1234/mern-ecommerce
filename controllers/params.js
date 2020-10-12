@@ -1,9 +1,6 @@
 const User = require("../models/user");
 const Product = require("../models/product");
 const Category = require("../models/category");
-const { errorHandler } = require("../helpers/dbErrorHandler");
-const jwt = require("jsonwebtoken");
-const expressJwt = require("express-jwt");
 
 exports.userById = (req, res, next, _id) => {
   User.findById(_id).exec((err, user) => {

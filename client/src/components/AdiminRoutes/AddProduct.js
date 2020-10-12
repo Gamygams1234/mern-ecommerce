@@ -43,19 +43,21 @@ const AddProduct = ({ user, token }) => {
       });
   };
 
-  // setError("");
   const handleChange = (name) => (event) => {
     const value = name === "photo" ? event.target.files[0] : event.target.value;
     formData.set(name, value);
-    setValues({ ...values, [name]: value });
+    setValues({ ...values, [name]: value, error: "" });
   };
 
   const submit = (e) => {
     e.preventDefault();
+
+    // empty the error
     setValues({
       ...values,
       error: "",
     });
+    // setting the checks for theh form
     if (name === "") {
       setValues({
         ...values,
@@ -93,6 +95,7 @@ const AddProduct = ({ user, token }) => {
       });
       window.scrollTo(0, 0);
     } else {
+      // post the item once the checks are done
       axios({
         method: "post",
         url: `/api/products/create/${user._id}`,

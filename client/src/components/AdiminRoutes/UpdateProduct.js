@@ -8,10 +8,7 @@ import { updateProduct } from "../../actions/products";
 const UpdateProduct = ({ userID, token, updateProduct }) => {
   let { product_id } = useParams();
   const [values, setValues] = useState({
-    loading: false,
     error: "",
-    createdProduct: "",
-    redirectToProfile: false,
   });
   const [success, setSuccess] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -26,7 +23,7 @@ const UpdateProduct = ({ userID, token, updateProduct }) => {
     photo: "",
   });
 
-  const { loading, error, createdProduct, redirectToProfile, formData } = values;
+  const { error } = values;
   const { name, description, price, category, shipping, quantity } = object;
 
   const getSingleProduct = (productId) => {
@@ -79,31 +76,68 @@ const UpdateProduct = ({ userID, token, updateProduct }) => {
       ...values,
       error: "",
     });
-
-    var form_data = new FormData();
-
-    for (var key in object) {
-      form_data.append(key, object[key]);
-    }
-
-    axios({
-      method: "put",
-      url: `/api/products/update/${product_id}/${userID}`,
-      data: form_data,
-      headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        setSuccess(name);
-        window.scrollTo(0, 0);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setValues({
-          ...values,
-          error: "There was an error with placing the product",
-        });
-        window.scrollTo(0, 0);
+    if (name === "") {
+      setValues({
+        ...values,
+        error: "Please place a name for the product.",
       });
+      window.scrollTo(0, 0);
+    } else if (description === "") {
+      setValues({
+        ...values,
+        error: "Please place a description for the product.",
+      });
+      window.scrollTo(0, 0);
+    } else if (price === "") {
+      setValues({
+        ...values,
+        error: "Please place a price for the product.",
+      });
+      window.scrollTo(0, 0);
+    } else if (category === "") {
+      setValues({
+        ...values,
+        error: "Please make sure that the product has a category.",
+      });
+      window.scrollTo(0, 0);
+    } else if (shipping === "") {
+      setValues({
+        ...values,
+        error: "Please make make sure that the product has a category.",
+      });
+      window.scrollTo(0, 0);
+    } else if (quantity === "") {
+      setValues({
+        ...values,
+        error: "Please make make sure that the product has a quantity.",
+      });
+      window.scrollTo(0, 0);
+    } else {
+      var form_data = new FormData();
+
+      for (var key in object) {
+        form_data.append(key, object[key]);
+      }
+
+      axios({
+        method: "put",
+        url: `/api/products/update/${product_id}/${userID}`,
+        data: form_data,
+        headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          setSuccess(name);
+          window.scrollTo(0, 0);
+        })
+        .catch((err) => {
+          console.log(err.message);
+          setValues({
+            ...values,
+            error: "There was an error with placing the product",
+          });
+          window.scrollTo(0, 0);
+        });
+    }
   };
 
   const showError = () => (

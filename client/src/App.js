@@ -8,7 +8,7 @@ import store from "./store";
 import { Provider } from "react-redux";
 import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRoute from "./components/routing/PrivateRoute";
-import NotAdmin from "./components/routing/NotAdmin";
+
 import AddCategory from "./components/AdiminRoutes/AddCategory";
 import AdminRoute from "./components/routing/AdminRoute";
 import AddProduct from "./components/AdiminRoutes/AddProduct";
@@ -24,6 +24,7 @@ import UserOrders from "./components/shop/UserOrders";
 import UserSingleOrder from "./components/shop/UserSingleOrder";
 
 const App = () => {
+  // loding the user and cart in the start of our application
   useEffect(() => {
     store.dispatch(loadUser());
     store.dispatch(loadCart());
@@ -51,7 +52,6 @@ const App = () => {
               <PrivateRoute path="/user/orders/:order_id" component={UserSingleOrder}></PrivateRoute>
               <Route path="/sign-in" component={SignIn}></Route>
               <Route path="/sign-up" component={SignUp}></Route>
-              <Route path="/not-admin" component={NotAdmin}></Route>
             </Switch>
           </div>
         </Fragment>

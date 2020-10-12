@@ -10,6 +10,7 @@ const UserOrders = ({ getAllOrders, userID, token, orders }) => {
     getAllOrders(userID, token);
   }, [getAllOrders]);
 
+  // filtering the orders only for the user
   const userOrders = orders.filter(function (order) {
     return order.user._id === userID;
   });

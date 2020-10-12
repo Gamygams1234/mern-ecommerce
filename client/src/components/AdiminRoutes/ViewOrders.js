@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 
 const ViewOrders = ({ getAllOrders, userID, token, orders }) => {
+  // getting all the orders from the start
   useEffect(() => {
     getAllOrders(userID, token);
   }, [getAllOrders]);

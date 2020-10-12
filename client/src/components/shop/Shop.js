@@ -19,6 +19,7 @@ const Shop = ({ products, getProducts, getFilteredProducts, getSearchProducts, m
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // making sure the product includes the name and not exact
     const productSearch = { name: { $regex: search, $options: "i" } };
     getSearchProducts(productSearch);
     setSearch("");
@@ -159,7 +160,7 @@ const Shop = ({ products, getProducts, getFilteredProducts, getSearchProducts, m
               </div>
             ) : madeSearch ? (
               <div>
-                <h4>Sorry, there are no products matching thet search.</h4>
+                <h4>Sorry, there are no products matching that search.</h4>
                 <h4>We will restock soon.</h4>
               </div>
             ) : (

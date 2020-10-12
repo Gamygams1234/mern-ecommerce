@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 // making sure we can get our dot env file
 require("dotenv").config();
 
+// making the new user
 exports.signUp = (req, res) => {
   console.log("req.body", req.body);
   const user = new User(req.body);
@@ -24,6 +25,7 @@ exports.signUp = (req, res) => {
   });
 };
 
+// signing user in
 exports.signIn = (req, res) => {
   // checking for the two fields
   const { email, password } = req.body;
@@ -42,7 +44,8 @@ exports.signIn = (req, res) => {
     }
     // create authencications
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-    res.cookie("t", token, { expire: new Date() + 99999 });
+    // 24 ours til the token expires
+    res.cookie("t", token, { expire: new Date() + 86400 });
     const { _id, name, email, role } = user;
     return res.json({ token, user: { _id, email, name, role } });
   });

@@ -44,7 +44,7 @@ app.use("/api", productRoute);
 app.use("/api", braintreeRoute);
 app.use("/api", orderRoute);
 
-// serve static assets
+// serve static assets important for deployment on heroku
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 

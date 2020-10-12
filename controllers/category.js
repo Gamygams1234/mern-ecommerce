@@ -1,6 +1,5 @@
 const Category = require("../models/category");
-const jwt = require("jsonwebtoken");
-const expressJwt = require("express-jwt");
+
 const { errorHandler } = require("../helpers/dbErrorHandler");
 // making sure we can get our dot env file
 require("dotenv").config();

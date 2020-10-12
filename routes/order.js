@@ -11,6 +11,6 @@ router.post("/order/create/:userId", requireSignin, isAuth, create);
 router.get("/order/list/:userId", requireSignin, isAuth, listOrders);
 
 router.param("userId", userById);
-router.param("orderId", orderById);
+// router.param("orderId", orderById);
 
 module.exports = router;
